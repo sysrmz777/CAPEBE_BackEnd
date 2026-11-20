@@ -1,0 +1,81 @@
+services:
+  postgres-db:
+    image: postgres:18-alpine
+    container_name: postgres_capebe
+    restart: always
+    environment:
+      POSTGRES_DB: capebeBD
+      POSTGRES_USER: ${DB_USER:-postgres}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-123456}
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${DB_USER:-postgres} -d capebeBD"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  service-vuelos:
+    build: ./service-vuelos
+    container_name: capebe_service_vuelos
+    restart: always
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    ports:
+      - "8082:8082"
+    environment:
+      PORT: 8082
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_NAME: capebeBD
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-123456}
+      DDL_AUTO: update
+      SHOW_SQL: "true"
+      SYNC_SERVICES: "true"
+      PISTA_SERVICE_URL: http://service-pista:8083
+      QR_SERVICE_URL: http://service-qr:8084
+
+  service-pista:
+    build: ./service-pista
+    container_name: capebe_service_pista
+    restart: always
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    ports:
+      - "8083:8083"
+    environment:
+      PORT: 8083
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_NAME: capebeBD
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-123456}
+      DDL_AUTO: update
+      SHOW_SQL: "true"
+
+  service-qr:
+    build: ./service-qr
+    container_name: capebe_service_qr
+    restart: always
+    depends_on:
+      postgres-db:
+        condition: service_healthy
+    ports:
+      - "8084:8084"
+    environment:
+      PORT: 8084
+      DB_HOST: postgres-db
+      DB_PORT: 5432
+      DB_NAME: capebeBD
+      DB_USER: ${DB_USER:-postgres}
+      DB_PASSWORD: ${DB_PASSWORD:-123456}
+      DDL_AUTO: update
+      SHOW_SQL: "true"
+
+volumes:
+  postgres_data:
