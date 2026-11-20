@@ -1,0 +1,194 @@
+{
+  "info": {
+    "name": "CAPEBE Backend Completo (Vuelos 8082, Pista/DGAC 8083 & QR 8084)",
+    "description": "Colección completa de endpoints REST de los 3 microservicios CAPEBE (PostgreSQL capebeBD:5434) incluyendo parámetros del Socio Formador",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. service-vuelos (Puerto 8082 - Rol Socio)",
+      "item": [
+        {
+          "name": "Listar todos los vuelos",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/vuelos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "vuelos"]
+            }
+          }
+        },
+        {
+          "name": "Listar vuelos por fecha (fin de semana/festivo)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8082/api/vuelos/fecha/2026-11-21",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "vuelos", "fecha", "2026-11-21"]
+            }
+          }
+        },
+        {
+          "name": "Crear reserva completa (Socio Formador)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pasajero\": \"Álvaro Ramírez Soto\",\n  \"rut\": \"18.452.310-K\",\n  \"oficinaBanco\": \"Casa Matriz Alameda\",\n  \"esSocio\": true,\n  \"telefonoMovil\": \"+56987654321\",\n  \"cantidadPasajeros\": 3,\n  \"fecha\": \"2026-11-21\",\n  \"bloqueHorario\": \"10:00 - 11:00\",\n  \"aeronave\": \"CC-AAA Cessna 172\",\n  \"plazasAeronave\": 4,\n  \"baseAerea\": \"Tobalaba\",\n  \"destino\": \"Circuito Precordillera Santiago (SCTB)\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8082/api/vuelos",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8082",
+              "path": ["api", "vuelos"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. service-pista (Puerto 8083 - Encargado de Pista & DGAC)",
+      "item": [
+        {
+          "name": "Listar flota de aeronaves (4 y 6 plazas + horómetro/mantenimiento)",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/v1/pista/aeronaves",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "v1", "pista", "aeronaves"]
+            }
+          }
+        },
+        {
+          "name": "Listar operaciones de pista",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/v1/pista",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "v1", "pista"]
+            }
+          }
+        },
+        {
+          "name": "Registrar vuelo y horómetro DGAC (XXXX.X, máx 20 min)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"pilotoAlMando\": \"Cap. Rodrigo Fuentes\",\n  \"horaLocal\": \"10:15\",\n  \"destino\": \"Circuito Precordillera Santiago (SCTB)\",\n  \"horometroInicial\": 1245.2,\n  \"horometroFinal\": 1245.5\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8083/api/v1/pista/1/registrar-vuelo",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "v1", "pista", "1", "registrar-vuelo"]
+            }
+          }
+        },
+        {
+          "name": "Reporte Diario DGAC y Mantenimiento",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8083/api/v1/pista/reporte",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8083",
+              "path": ["api", "v1", "pista", "reporte"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. service-qr (Puerto 8084 - Embarque QR y Código Único)",
+      "item": [
+        {
+          "name": "Listar todos los pases QR",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/api/v1/qr",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "v1", "qr"]
+            }
+          }
+        },
+        {
+          "name": "Buscar y verificar pase por código único",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "http://localhost:8084/api/v1/qr/codigo/CAPEBE-SCTB-1001",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "v1", "qr", "codigo", "CAPEBE-SCTB-1001"]
+            }
+          }
+        },
+        {
+          "name": "Generar QR real con datos del invitado (App Socio)",
+          "request": {
+            "method": "POST",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"socio\": \"Álvaro Ramírez Soto\",\n  \"rut\": \"18.452.310-K\",\n  \"oficinaBanco\": \"Casa Matriz Alameda\",\n  \"esSocio\": true,\n  \"telefonoMovil\": \"+56987654321\",\n  \"cantidadPasajeros\": 3,\n  \"plazasAeronave\": 4,\n  \"fecha\": \"2026-11-21\",\n  \"horario\": \"10:00 - 11:00\",\n  \"base\": \"Tobalaba\",\n  \"aeronave\": \"CC-AAA Cessna 172\"\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8084/api/v1/qr/generar",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "v1", "qr", "generar"]
+            }
+          }
+        },
+        {
+          "name": "Validar QR en Pista con Horómetro (App Encargado Pista)",
+          "request": {
+            "method": "PUT",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"encargadoPista\": \"Encargado Pista\",\n  \"pilotoAlMando\": \"Cap. Rodrigo Fuentes\",\n  \"observaciones\": \"Identidad verificada en terreno, pista despejada y 100LL OK\",\n  \"pistaDespejada\": true,\n  \"combustibleOk\": true,\n  \"lucesOk\": true,\n  \"horometroInicial\": 1245.2,\n  \"horometroFinal\": 1245.5\n}"
+            },
+            "url": {
+              "raw": "http://localhost:8084/api/v1/qr/validar/CAPEBE-SCTB-1001",
+              "protocol": "http",
+              "host": ["localhost"],
+              "port": "8084",
+              "path": ["api", "v1", "qr", "validar", "CAPEBE-SCTB-1001"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
